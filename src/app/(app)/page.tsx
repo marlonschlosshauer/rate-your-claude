@@ -1,9 +1,7 @@
-"use client";
-
 import { ReviewForm } from "@/components/review-form";
 import { ReviewsChart } from "@/components/reviews-chart";
 
-export default function Home() {
+export default function AppPage() {
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-12">
       <div className="w-full max-w-2xl flex flex-col gap-8">
