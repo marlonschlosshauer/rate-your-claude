@@ -9,7 +9,7 @@ export const PERIODS = [
 export type PeriodValue = (typeof PERIODS)[number]["value"];
 
 export const RATINGS = [
-  { value: 1, label: "As dumb as a rock" },
+  { value: 1, label: "Dumb as a rock" },
   { value: 2, label: "Terrible" },
   { value: 3, label: "Fair" },
   { value: 4, label: "Great!" },

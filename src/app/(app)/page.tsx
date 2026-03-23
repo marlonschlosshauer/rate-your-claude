@@ -9,8 +9,8 @@ export default function AppPage() {
           <h1 className="text-4xl font-bold tracking-tight">
             Rate your Claude
           </h1>
-          <p className="mt-3 text-neutral-400 max-w-lg mx-auto">
-            We all know Claude can be a bit temperamental. Yesterday he
+          <p className="mt-3 text-sand-500 max-w-lg mx-auto">
+            We all know Claude can be a bit <em>erratic</em>. Yesterday he
             one-shotted a huge migration, today he struggles to move some simple
             DOM-elements around. Share your signal.
           </p>
@@ -19,7 +19,7 @@ export default function AppPage() {
         <ReviewForm />
         <ReviewsChart />
 
-        <footer className="text-center text-xs text-neutral-500 dark:text-neutral-600 pt-4 border-t border-neutral-800">
+        <footer className="text-center text-xs text-sand-600 pt-4">
           This site is not affiliated with, endorsed by, or associated with
           Anthropic, PBC. &ldquo;Claude&rdquo; is a trademark of Anthropic.
         </footer>

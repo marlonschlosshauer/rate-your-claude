@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #161616;
+  --foreground: #ccc;
 }
 
 @theme inline {
@@ -10,13 +10,24 @@
   --color-foreground: var(--foreground);
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, monospace;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Warm sand scale */
+  --color-sand-50: #ece7df;
+  --color-sand-100: #e2dbd0;
+  --color-sand-200: #d5cec4;
+  --color-sand-300: #c4bbae;
+  --color-sand-400: #b0a697;
+  --color-sand-500: #8a7e72;
+  --color-sand-600: #6b5f53;
+  --color-sand-700: #554a3f;
+  --color-sand-800: #453a30;
+  --color-sand-900: #3d3329;
+  --color-sand-950: #2c2520;
+
+  /* Terracotta accent */
+  --color-terracotta-400: #d4956f;
+  --color-terracotta-500: #c47a5a;
+  --color-terracotta-600: #a86548;
 }
 
 body {

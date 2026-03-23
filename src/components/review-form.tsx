@@ -3,15 +3,9 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   RATINGS,
   type PeriodValue,
@@ -59,11 +53,8 @@ export function ReviewForm() {
   if (hasVoted) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Rate your Claude</CardTitle>
-        </CardHeader>
         <CardContent>
-          <p className="text-neutral-500 dark:text-neutral-400">
+          <p className="text-sand-500 text-center">
             {submitted
               ? "Thanks for your rating! Come back tomorrow."
               : "You've already rated today. Come back tomorrow!"}
@@ -76,11 +67,8 @@ export function ReviewForm() {
   if (availablePeriods.length === 0) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Rate your Claude</CardTitle>
-        </CardHeader>
         <CardContent>
-          <p className="text-neutral-500 dark:text-neutral-400">
+          <p className="text-sand-500">
             No periods available yet. Check back after 8 AM!
           </p>
         </CardContent>
@@ -90,49 +78,55 @@ export function ReviewForm() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Rate your Claude</CardTitle>
-      </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Period of day</label>
-            <Select
+            <RadioGroup
               value={period}
               onValueChange={(v) => setPeriod(v as PeriodValue)}
+              className="flex flex-wrap gap-x-4 gap-y-2"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a period" />
-              </SelectTrigger>
-              <SelectContent>
-                {availablePeriods.map((p) => (
-                  <SelectItem key={p.value} value={p.value}>
+              {availablePeriods.map((p) => (
+                <div key={p.value} className="flex items-center gap-2">
+                  <RadioGroupItem value={p.value} id={`period-${p.value}`} />
+                  <label
+                    htmlFor={`period-${p.value}`}
+                    className="text-sm cursor-pointer"
+                  >
                     {p.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  </label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">
-              How was Claude?
-            </label>
-            <Select value={rating} onValueChange={setRating}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a rating" />
-              </SelectTrigger>
-              <SelectContent>
-                {RATINGS.map((r) => (
-                  <SelectItem key={r.value} value={String(r.value)}>
+            <label className="text-sm font-medium">How was Claude?</label>
+            <RadioGroup
+              value={rating}
+              onValueChange={setRating}
+              className="flex flex-wrap gap-x-4 gap-y-2"
+            >
+              {RATINGS.map((r) => (
+                <div key={r.value} className="flex items-center gap-2">
+                  <RadioGroupItem
+                    value={String(r.value)}
+                    id={`rating-${r.value}`}
+                  />
+                  <label
+                    htmlFor={`rating-${r.value}`}
+                    className="text-sm cursor-pointer"
+                  >
                     {r.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  </label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
 
           <Button
+            className="m-auto"
             onClick={handleSubmit}
             disabled={!period || !rating || submitting}
           >

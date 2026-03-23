@@ -11,7 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { PERIODS, RATINGS } from "@/lib/periods";
 
 function getDateRange() {
@@ -24,17 +24,21 @@ function getDateRange() {
 }
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return `${d}.${m}`;
 }
 
 interface ChartDataPoint {
   label: string;
+  dateLabel: string;
+  period: string;
   avg: number | null;
   count: number;
 }
 
 function buildChartData(
-  reviews: Array<{ date: number; rating: number }>
+  reviews: Array<{ date: number; rating: number }>,
 ): ChartDataPoint[] {
   const now = new Date();
   const points: ChartDataPoint[] = [];
@@ -43,16 +47,17 @@ function buildChartData(
     const day = new Date(
       now.getFullYear(),
       now.getMonth(),
-      now.getDate() + dayOffset
+      now.getDate() + dayOffset,
     );
     const dayStr = formatDate(day);
 
-    for (const period of PERIODS) {
+    for (let i = 0; i < PERIODS.length; i++) {
+      const period = PERIODS[i];
       const periodTime = new Date(
         day.getFullYear(),
         day.getMonth(),
         day.getDate(),
-        period.hour
+        period.hour,
       ).getTime();
 
       const matching = reviews.filter((r) => r.date === periodTime);
@@ -63,6 +68,8 @@ function buildChartData(
 
       points.push({
         label: `${dayStr} ${period.label}`,
+        dateLabel: i === 0 ? dayStr : "",
+        period: period.label,
         avg: avg !== null ? Math.round(avg * 100) / 100 : null,
         count: matching.length,
       });
@@ -84,11 +91,8 @@ export function ReviewsChart() {
   if (reviews === undefined) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Ratings</CardTitle>
-        </CardHeader>
         <CardContent>
-          <p className="text-neutral-500 dark:text-neutral-400">Loading...</p>
+          <p className="text-sand-500">Loading...</p>
         </CardContent>
       </Card>
     );
@@ -99,25 +103,30 @@ export function ReviewsChart() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Recent Ratings</CardTitle>
-      </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-neutral-500 dark:text-neutral-400">
-            No ratings yet for the past 3 days.
-          </p>
+          <p className="text-sand-500">No ratings yet for the past 3 days.</p>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+            <LineChart
+              data={data}
+              margin={{ top: 5, right: 80, bottom: 5, left: 0 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#8a7e72"
+                strokeOpacity={0.6}
+              />
               <XAxis
                 dataKey="label"
                 tick={{ fontSize: 11 }}
-                angle={-35}
-                textAnchor="end"
-                height={80}
-                stroke="#888"
+                height={40}
+                stroke="#8a7e72"
+                interval={0}
+                tickFormatter={(_value, index) => {
+                  const point = data[index];
+                  return point?.dateLabel || "";
+                }}
               />
               <YAxis
                 domain={[1, 5]}
@@ -125,26 +134,32 @@ export function ReviewsChart() {
                 tickFormatter={(v) => ratingLabel(v)}
                 tick={{ fontSize: 11 }}
                 width={120}
-                stroke="#888"
+                stroke="#8a7e72"
               />
               <Tooltip
                 formatter={(value) => [
                   `${Number(value).toFixed(2)} — ${ratingLabel(Number(value))}`,
                   "Avg Rating",
                 ]}
+                labelFormatter={(_label, payload) => {
+                  const point = payload?.[0]?.payload as
+                    | ChartDataPoint
+                    | undefined;
+                  return point ? `${point.period}` : "";
+                }}
                 contentStyle={{
-                  backgroundColor: "#1a1a1a",
-                  border: "1px solid #333",
+                  backgroundColor: "#3d3329",
+                  border: "1px solid #554a3f",
                   borderRadius: "8px",
-                  color: "#eee",
+                  color: "#ece7df",
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="avg"
-                stroke="#f97316"
+                stroke="#c47a5a"
                 strokeWidth={2}
-                dot={{ r: 4, fill: "#f97316" }}
+                dot={{ r: 4, fill: "#c47a5a" }}
                 connectNulls={false}
               />
             </LineChart>
