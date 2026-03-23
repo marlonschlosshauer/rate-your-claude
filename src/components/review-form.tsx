@@ -53,7 +53,7 @@ export function ReviewForm() {
   if (hasVoted) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="flex items-center justify-center min-h-[205px]">
           <p className="text-sand-500 text-center">
             {submitted
               ? "Thanks for your rating! Come back tomorrow."
@@ -67,8 +67,8 @@ export function ReviewForm() {
   if (availablePeriods.length === 0) {
     return (
       <Card>
-        <CardContent>
-          <p className="text-sand-500">
+        <CardContent className="flex items-center justify-center min-h-[205px]">
+          <p className="text-sand-500 text-center">
             No periods available yet. Check back after 8 AM!
           </p>
         </CardContent>
@@ -79,7 +79,7 @@ export function ReviewForm() {
   return (
     <Card>
       <CardContent>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 m-auto max-w-[460px]">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Period of day</label>
             <RadioGroup

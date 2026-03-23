@@ -91,7 +91,7 @@ export function ReviewsChart() {
   if (reviews === undefined) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="h-[300px]">
           <p className="text-sand-500">Loading...</p>
         </CardContent>
       </Card>
