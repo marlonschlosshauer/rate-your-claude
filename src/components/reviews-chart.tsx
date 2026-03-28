@@ -85,8 +85,6 @@ function ratingLabel(value: number): string {
   return r ? r.label : String(value);
 }
 
-const margins = { top: 5, right: 80, bottom: 5, left: 0 };
-
 export function ReviewsChart() {
   const { startDate, endDate } = getDateRange();
   const reviews = useQuery(api.reviews.getByDateRange, { startDate, endDate });
