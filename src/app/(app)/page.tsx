@@ -12,17 +12,12 @@ export default function AppPage() {
           <p className="mt-3 text-sand-500 max-w-lg mx-auto">
             We all know Claude can be a bit <em>erratic</em>. Yesterday he
             one-shotted a huge migration, today he struggles to move some simple
-            DOM-elements around. Share your signal.
+            DOM-elements around.
           </p>
+          <p className="mt-5">So, how was Claude for you today?</p>
         </header>
-
         <ReviewForm />
         <ReviewsChart />
-
-        <footer className="text-center text-xs text-sand-600 pt-4">
-          This site is not affiliated with, endorsed by, or associated with
-          Anthropic, PBC. &ldquo;Claude&rdquo; is a trademark of Anthropic.
-        </footer>
       </div>
     </main>
   );

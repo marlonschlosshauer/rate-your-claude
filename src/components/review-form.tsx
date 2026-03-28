@@ -1,75 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  RATINGS,
-  type PeriodValue,
-  getAvailablePeriods,
-  getTodayKey,
-  periodToTimestamp,
-} from "@/lib/periods";
+import { RATINGS } from "@/lib/constants";
 
 export function ReviewForm() {
   const submit = useMutation(api.reviews.submit);
-  const [period, setPeriod] = useState<PeriodValue | "">("");
   const [rating, setRating] = useState<string>("");
   const [hasVoted, setHasVoted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const availablePeriods = getAvailablePeriods();
-
-  useEffect(() => {
-    const key = getTodayKey();
-    if (typeof window !== "undefined" && localStorage.getItem(key)) {
-      setHasVoted(true);
-    }
-  }, []);
+  const [isPending, startTransition] = useTransition();
 
   async function handleSubmit() {
-    if (!period || !rating) return;
-    setSubmitting(true);
-    try {
-      const timestamp = periodToTimestamp(period);
+    if (!rating) return;
+
+    startTransition(async () => {
       await submit({
         rating: Number(rating),
-        date: timestamp,
-        region: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        date: Date.now(),
       });
-      const key = getTodayKey();
-      localStorage.setItem(key, "true");
-      setHasVoted(true);
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
-    }
+
+      startTransition(() => {
+        setHasVoted(true);
+      });
+    });
   }
 
   if (hasVoted) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center min-h-[205px]">
+        <CardContent className="flex items-center justify-center min-h-[107px]">
           <p className="text-sand-500 text-center">
-            {submitted
-              ? "Thanks for your rating! Come back tomorrow."
-              : "You've already rated today. Come back tomorrow!"}
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (availablePeriods.length === 0) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center min-h-[205px]">
-          <p className="text-sand-500 text-center">
-            No periods available yet. Check back after 8 AM!
+            Thanks for your rating! Come back tomorrow.
           </p>
         </CardContent>
       </Card>
@@ -80,33 +45,11 @@ export function ReviewForm() {
     <Card>
       <CardContent>
         <div className="flex flex-col gap-6 m-auto max-w-[460px]">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">Period of day</label>
-            <RadioGroup
-              value={period}
-              onValueChange={(v) => setPeriod(v as PeriodValue)}
-              className="flex flex-wrap gap-x-4 gap-y-2"
-            >
-              {availablePeriods.map((p) => (
-                <div key={p.value} className="flex items-center gap-2">
-                  <RadioGroupItem value={p.value} id={`period-${p.value}`} />
-                  <label
-                    htmlFor={`period-${p.value}`}
-                    className="text-sm cursor-pointer"
-                  >
-                    {p.label}
-                  </label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">How was Claude?</label>
+          <div className="flex flex-col gap-2 justify-center">
             <RadioGroup
               value={rating}
               onValueChange={setRating}
-              className="flex flex-wrap gap-x-4 gap-y-2"
+              className="flex flex-wrap gap-x-4 gap-y-2 justify-center"
             >
               {RATINGS.map((r) => (
                 <div key={r.value} className="flex items-center gap-2">
@@ -128,9 +71,9 @@ export function ReviewForm() {
           <Button
             className="m-auto"
             onClick={handleSubmit}
-            disabled={!period || !rating || submitting}
+            disabled={!rating || isPending}
           >
-            {submitting ? "Submitting..." : "Submit Rating"}
+            {isPending ? "Submitting..." : "Submit Rating"}
           </Button>
         </div>
       </CardContent>

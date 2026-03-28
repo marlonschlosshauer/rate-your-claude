@@ -22,7 +22,6 @@ export const submit = mutation({
   args: {
     rating: v.number(),
     date: v.number(),
-    region: v.string(),
   },
   handler: async (ctx, args) => {
     const validated = reviewSchema.parse(args);
